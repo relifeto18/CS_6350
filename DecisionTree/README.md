@@ -23,7 +23,7 @@ mkdir data
 cd data
 unzip car.zip -d car
 unzip bank.zip -d bank
-cd ../
+cd ../ (Should be under /DecisionTree)
 chmod +x run.sh
 ./run.sh
 ```
