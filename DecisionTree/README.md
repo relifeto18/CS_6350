@@ -1,6 +1,18 @@
 ## Instructions
 - Please put the data folder under the **same** folder (DecisionTree) with python script. 
 
+- ```
+    CS_6350/
+    ├── DecisionTree/
+    │   ├── data/
+    │   ├── ID3_bank.py
+    │   ├── ID3_car.py
+    │   ├── run.sh
+    │   └── README.md
+    ├── .gitignore
+    └── README.md
+    ```
+
 - Please run the following command in the **Linux** system.
 
 - You will be asked to choose a maximum depth for the tree for the first task (car).
