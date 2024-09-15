@@ -4,6 +4,12 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 
+# Get attribute descriptions from data-desc.txt
+label = 'label'
+attributes = ['age', 'job', 'marital', 'education', 'default', 'balance', 'housing', 'loan', 'contact', 'day', 
+                'month', 'duration', 'campaign', 'pdays', 'previous', 'poutcome']
+numerical_attributes = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+columns_with_unknown = ['job', 'education', 'contact', 'poutcome']
 
 ##########################################################################################
 ##########################################################################################
@@ -69,123 +75,102 @@ def gini_index(data):
     
 #     return gain
 
-# Function to split data based on an attribute
+# Split the dataset based on an attribute
 def split_data(data, attribute):
     values = data[attribute].unique()
-    splits = {value: data[data[attribute] == value] for value in values}
+    subset = {value: data[data[attribute] == value] for value in values}
     
-    return splits
+    return subset
 
-# Function to choose the best attribute
-def choose_best_attribute(data, attributes, heuristic):
-    # Base heuristic
+# Function to choose the best attribute based on the selected heuristic
+def choose_best_attribute(data, attributes, heuristic='entropy'):
     if heuristic == 'entropy':
-        base_heuristic_value = entropy(data)
+        base_score = entropy(data)
     elif heuristic == 'majority_error':
-        base_heuristic_value = majority_error(data)
-    elif heuristic == 'gini':
-        base_heuristic_value = gini_index(data)
+        base_score = majority_error(data)
+    else:
+        base_score = gini_index(data)
     
-    best_gain = 0
+    # Calculate information gain or reduction in Gini index or majority error for each attribute
     best_attribute = None
+    best_gain = -float('inf')
     
     for attribute in attributes:
         splits = split_data(data, attribute)
-        weighted_average = sum((len(subset) / len(data)) * (entropy(subset) if heuristic == 'entropy'
-                                                            else majority_error(subset) if heuristic == 'majority_error'
-                                                            else gini_index(subset))
-                               for subset in splits.values())
+        weighted_score = sum((len(subset) / len(data)) * (entropy(subset) if heuristic == 'entropy'
+                                                          else majority_error(subset) if heuristic == 'majority_error'
+                                                          else gini_index(subset))
+                            for subset in splits.values())
         
-        gain = base_heuristic_value - weighted_average
-        
-        # Update the best attribute
+        gain = base_score - weighted_score
         if gain > best_gain:
             best_gain = gain
             best_attribute = attribute
-        
+    
     return best_attribute
 
-# Build the ID3 tree
-class TreeNode:
-    def __init__(self, attribute=None, value=None, label=None):
-        self.attribute = attribute
-        self.value = value
-        self.label = label
-        self.children = {}
-
-def build_tree(data, attributes, heuristic, max_depth, current_depth=0):
-    labels = data[label]
+# Recursive function to build the decision tree
+def id3_algorithm(data, attributes, label, max_depth=None, depth=0, heuristic='entropy'):
+    # Check if all labels are the same (pure node)
+    if len(Counter(data[label])) == 1:
+        return {'label': data[label].iloc[0]}
     
-    if len(set(labels)) == 1:
-        return TreeNode(label=labels.iloc[0])
+    # Check if we've reached the maximum depth
+    if max_depth is not None and depth == max_depth:
+        majority_label = Counter(data[label]).most_common(1)[0][0]
+        return {'label': majority_label}
     
-    if not attributes or current_depth == max_depth:
-        return TreeNode(label=Counter(labels).most_common(1)[0][0])
+    # If there are no attributes left to split, return the majority label
+    if not attributes:
+        majority_label = Counter(data[label]).most_common(1)[0][0]
+        return {'label': majority_label}
     
+    # Choose the best attribute to split on
     best_attribute = choose_best_attribute(data, attributes, heuristic)
     
-    # Check if no valid attribute was found
-    if best_attribute is None:
-        return TreeNode(label=Counter(labels).most_common(1)[0][0])
+    # Create a node for the best attribute
+    tree = {best_attribute: {}}
     
-    tree = TreeNode(attribute=best_attribute)
-    
+    # Split the data based on the best attribute
     splits = split_data(data, best_attribute)
+    
+    # Remove the best attribute from the available attributes
     remaining_attributes = [attr for attr in attributes if attr != best_attribute]
     
-    # Recursively call
-    for value, subset in splits.items():
-        if subset.empty:
-            tree.children[value] = TreeNode(label=Counter(labels).most_common(1)[0][0])
-        else:
-            tree.children[value] = build_tree(subset, remaining_attributes, heuristic, max_depth, current_depth + 1)
+    # Recursively build the tree for each subset
+    for attribute_value, subset in splits.items():
+        subtree = id3_algorithm(subset, remaining_attributes, label, max_depth, depth + 1, heuristic)
+        tree[best_attribute][attribute_value] = subtree
     
     return tree
 
-# Function to predict the label for a single example
-def predict(tree, example):
-    if tree.label is not None:
-        return tree.label
+# Function to predict the label of a single instance
+def predict(tree, instance):
+    if 'label' in tree:
+        return tree['label']
     
-    attribute_value = example[tree.attribute]
-    if attribute_value in tree.children:
-        return predict(tree.children[attribute_value], example)
+    attribute = next(iter(tree))
+    attribute_value = instance[attribute]
+    
+    if attribute_value in tree[attribute]:
+        return predict(tree[attribute][attribute_value], instance)
     else:
+        # Return the most common label if the value is not found
         return None
 
-# Function to evaluate the decision tree on a dataset
-def evaluate(tree, data):
-    predictions = data.apply(lambda row: predict(tree, row), axis=1)
-    accuracy = (predictions == data[label]).mean()
-    error = 1 - accuracy
-    
-    return error
-
-# Train and test the decision tree using different heuristics and depths
-def run_experiment(max_depth):
-    heuristics = ['entropy', 'majority_error', 'gini']
-    results = {}
-    
-    for heuristic in heuristics:
-        tree = build_tree(train_data, attributes, heuristic, max_depth)
-        train_error  = evaluate(tree, train_data)
-        test_error = evaluate(tree, test_data)
-        results[heuristic] = (train_error, test_error)
-    
-    return results
+# Function to calculate training error
+def calculate_error(tree, data):
+    incorrect_predictions = 0
+    for _, instance in data.iterrows():
+        if predict(tree, instance) != instance[label]:
+            incorrect_predictions += 1
+    return incorrect_predictions / len(data)
 
 
-if __name__ == "__main__":
+def main():
     # Load the datasets
     train_data = pd.read_csv('./data/bank/train.csv', header=None)
     test_data = pd.read_csv('./data/bank/test.csv', header=None)
-
-    # Get attribute descriptions from data-desc.txt
-    label = 'label'
-    attributes = ['age', 'job', 'marital', 'education', 'default', 'balance', 'housing', 'loan', 'contact', 'day', 
-                    'month', 'duration', 'campaign', 'pdays', 'previous', 'poutcome']
-    numerical_attributes = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
-    columns_with_unknown = ['job', 'education', 'contact', 'poutcome']
 
     # Add one row in the datasets
     train_data.columns = attributes + [label]
@@ -195,8 +180,15 @@ if __name__ == "__main__":
     treat_unknown = int(input("Treat unknown value as a particular attribute value (0) or as missing attribute value (1): ").strip())
     max_depth = int(input("Set the maximum tree depth (1-16): ").strip())
     
-    #### TODO ####
-    # add code to test valid input here
+    if max_depth == '':
+        max_depth = 16  # Default to be maximum
+    else:
+        max_depth = int(max_depth)
+        
+    if treat_unknown == '':
+        treat_unknown = 1  # Default to treat as missing attribute value
+    else:
+        treat_unknown = int(treat_unknown)
 
     if treat_unknown:
         # Replace "unknown" values with the majority value in the training set
@@ -206,35 +198,27 @@ if __name__ == "__main__":
     # Binarize the numerical columns in both train and test data
     train_data = binarize_numerical_features(train_data, numerical_attributes)
     test_data = binarize_numerical_features(test_data, numerical_attributes)
-
-    # Run experiment with specified inputs
-    results = run_experiment(max_depth)
-
-    # Output the results
-    print(f"Results for max depth: {max_depth}")
-    for heuristic, (train_error, test_error) in results.items():
-        print(f"Heuristic: {heuristic}, Train Error: {train_error:.4f}, Test Error: {test_error:.4f}")
-
-
-# def run_experiment(heuristics, depths):
-#     results = {}
-#     for heuristic in heuristics:
-#         results[heuristic] = []
-#         for depth in depths:
-#             tree = build_tree(train_data, attributes, heuristic, depth)
-#             train_error = evaluate(tree, train_data)
-#             test_error = evaluate(tree, test_data)
-#             results[heuristic].append((depth, train_error, test_error))
     
-#     return results
+    heuristics = ['entropy', 'majority_error', 'gini']
+    
+    print(f"Results for max depth: {max_depth}\n")
+    # Loop through all three heuristics
+    for heuristic in heuristics:
+        print(f"Running ID3 algorithm with heuristic: {heuristic}")
+        
+        # for depth in range(1, max_depth+1):
+        #     print(f"Building tree with max depth: {depth}")
+        
+        # Build a decision tree using the ID3 algorithm
+        tree = id3_algorithm(train_data, attributes, label, max_depth=max_depth, heuristic=heuristic)
+        
+        # Calculate training error
+        training_error = calculate_error(tree, train_data)
+        testing_error = calculate_error(tree, test_data)
+        
+        print(f"Training Error: {training_error:.4f}")
+        print(f"Testing Error: {testing_error:.4f}\n")
 
-# # Run experiments
-# heuristics = ['entropy', 'majority_error', 'gini']
-# depths = range(1, 17)
-# results = run_experiment(heuristics, depths)
 
-# # Display results
-# for heuristic in results:
-#     print(f"Heuristic: {heuristic}")
-#     for depth, train_acc, test_acc in results[heuristic]:
-#         print(f"Depth: {depth}, Train Error: {train_acc:.4f}, Test Error: {test_acc:.4f}")
+if __name__ == '__main__':
+    main()
