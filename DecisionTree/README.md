@@ -1,10 +1,12 @@
 ## Instructions
-- Please put the data folder under the **same** folder (DecisionTree) with python script. 
+- Please download and unzip the dataset and put them into the **data** folder under the same folder (DecisionTree) with python script. 
 
 - ```
     CS_6350/
     ├── DecisionTree/
     │   ├── data/
+    │   │   ├── car/
+    │   │   └── bank/
     │   ├── ID3_bank.py
     │   ├── ID3_car.py
     │   ├── run.sh
