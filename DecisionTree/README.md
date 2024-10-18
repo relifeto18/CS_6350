@@ -9,6 +9,8 @@ CS_6350/
 │   ├── ID3_car.py
 │   ├── run.sh
 │   └── README.md
+├── Ensemble Learning/
+├── Linear Regression/
 ├── .gitignore
 └── README.md
 ```
@@ -38,4 +40,4 @@ You will be asked to choose a way to treat unknown values and a maximum depth fo
 **To run the shell file at the current directory: `./run.sh`**
 - You may need to modify the permission: `chmod +x run.sh`
 
-(Optional) Usage of the python script: `python ID3_car.py` `python ID3_bank.py`
+(Optional) Usage of the python script: `python3 ID3_car.py` `python3 ID3_bank.py`
