@@ -1,10 +1,11 @@
 DecisionTree/data 
-Ensemble Learning/data 
-Ensemble Learning/AdaBoost.png
-Ensemble Learning/bagged.png
-Ensemble Learning/bias.png
-Ensemble Learning/forest.png
-Ensemble Learning/stumps.png
-Linear Regression/data
-Linear Regression/batch.png
-Linear Regression/SGD.png
+EnsembleLearning/data 
+EnsembleLearning/AdaBoost.png
+EnsembleLearning/bagged.png
+EnsembleLearning/bias.png
+EnsembleLearning/forest.png
+EnsembleLearning/forest_bias.png
+EnsembleLearning/stumps.png
+LinearRegression/data
+LinearRegression/batch.png
+LinearRegression/SGD.png

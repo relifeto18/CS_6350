@@ -2,7 +2,7 @@
 ```
 CS_6350/
 ├── DecisionTree/
-├── Ensemble Learning/
+├── EnsembleLearning/
 │   ├── data/
 │   │   ├── bank/
 │   │   └── credit_card/ (Optional)
@@ -14,21 +14,21 @@ CS_6350/
 │   ├── RandomForest_comparison.py
 │   ├── run.sh
 │   └── README.md
-├── Linear Regression/
+├── LinearRegression/
 ├── .gitignore
 └── README.md
 ```
 Please run the following command in the **Linux** system.
 
-Please download and unzip the dataset and put them into the **data** folder under the same folder (Ensemble Learning) with python script. 
+Please download and unzip the dataset and put them into the **data** folder under the same folder (EnsembleLearning) with python script. 
 
 ```
 git clone git@github.com:relifeto18/CS_6350.git
-cd CS_6350/Ensemble Learning/
+cd CS_6350/EnsembleLearning/
 mkdir data
 cd data
 unzip bank.zip -d bank
-cd ../ (Should be under /Ensemble Learning)
+cd ../ (Should be under /EnsembleLearning)
 chmod +x run.sh
 ./run.sh
 ```

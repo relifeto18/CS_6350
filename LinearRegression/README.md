@@ -2,8 +2,8 @@
 ```
 CS_6350/
 ├── DecisionTree/
-├── Ensemble Learning/
-├── Linear Regression/
+├── EnsembleLearning/
+├── LinearRegression/
 │   ├── data/
 │   │   └── concrete/
 │   ├── batchGD.py
@@ -16,15 +16,15 @@ CS_6350/
 ```
 Please run the following command in the **Linux** system.
 
-Please download and unzip the dataset and put them into the **data** folder under the same folder (Linear Regression) with python script. 
+Please download and unzip the dataset and put them into the **data** folder under the same folder (LinearRegression) with python script. 
 
 ```
 git clone git@github.com:relifeto18/CS_6350.git
-cd CS_6350/Linear Regression/
+cd CS_6350/LinearRegression/
 mkdir data
 cd data
 unzip concrete.zip -d concrete
-cd ../ (Should be under /Linear Regression)
+cd ../ (Should be under /LinearRegression)
 chmod +x run.sh
 ./run.sh
 ```

@@ -9,8 +9,8 @@ CS_6350/
 │   ├── ID3_car.py
 │   ├── run.sh
 │   └── README.md
-├── Ensemble Learning/
-├── Linear Regression/
+├── EnsembleLearning/
+├── LinearRegression/
 ├── .gitignore
 └── README.md
 ```
