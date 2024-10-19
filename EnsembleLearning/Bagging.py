@@ -369,35 +369,13 @@ def main():
     train_data = binarize_numerical_features(train_data, numerical_attributes)
     test_data = binarize_numerical_features(test_data, numerical_attributes)
     
-    ################################################# 2(c) ################################################# 
-    ########################################################################################################
-    # # results = run_experiment(train_data, test_data, attributes, label, num_trees=10, n_samples=1000, n_repeats=10)
-    # results = parallel_run_experiment(train_data, test_data, attributes, label, num_trees=500, n_samples=1000, n_repeats=100)
-
-    # print("Single Tree Results (Final Average):")
-    # print("Bias: ", np.mean(results['single_tree']['bias']))
-    # print("Variance: ", np.mean(results['single_tree']['variance']))
-    # print("GSE: ", np.mean(results['single_tree']['gse']))
-
-    # print("Bagged Trees Results (Final Average):")
-    # print("Bias: ", np.mean(results['bagged_trees']['bias']))
-    # print("Variance: ", np.mean(results['bagged_trees']['variance']))
-    # print("GSE: ", np.mean(results['bagged_trees']['gse']))
-    
-    # # Plot the bias, variance, and GSE for all iterations
-    # plot_bias_variance_results(results)
-    ########################################################################################################
-    ########################################################################################################
-
-
-    ################################################# 2(b) ################################################# 
-    ########################################################################################################
     # Vary the number of trees
     num_trees_range = list(range(1, 500))
     train_errors = []
     test_errors = []
 
     for num_trees in num_trees_range:
+        print("num_trees: ", num_trees)
         trees = bagged_trees(train_data, attributes, label, num_trees)
         train_error = calculate_bagging_error(trees, train_data)
         test_error = calculate_bagging_error(trees, test_data)
@@ -412,8 +390,6 @@ def main():
     plt.title('Bagging Performance')
     plt.legend()
     plt.show()
-    ########################################################################################################
-    ########################################################################################################
     
 if __name__ == '__main__':
     main()

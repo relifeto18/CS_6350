@@ -8,6 +8,8 @@ echo
 echo Running Bagging
 python3 Bagging.py
 
+echo
+
 echo Running Bagging Comparison
 python3 Bagging_comparison.py
 
@@ -15,6 +17,8 @@ echo
 
 echo Running Random Forest
 python3 RandomForest.py
+
+echo
 
 echo Running Random Forest Comparison
 python3 RandomForest_comparison.py

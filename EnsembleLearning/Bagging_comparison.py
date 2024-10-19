@@ -369,8 +369,6 @@ def main():
     train_data = binarize_numerical_features(train_data, numerical_attributes)
     test_data = binarize_numerical_features(test_data, numerical_attributes)
     
-    ################################################# 2(c) ################################################# 
-    ########################################################################################################
     # results = run_experiment(train_data, test_data, attributes, label, num_trees=10, n_samples=1000, n_repeats=10)
     results = parallel_run_experiment(train_data, test_data, attributes, label, num_trees=500, n_samples=1000, n_repeats=100)
 
@@ -386,35 +384,6 @@ def main():
     
     # Plot the bias, variance, and GSE for all iterations
     plot_bias_variance_results(results)
-    ########################################################################################################
-    ########################################################################################################
-
-
-    ################################################# 2(b) ################################################# 
-    ########################################################################################################
-    # # Vary the number of trees
-    # num_trees_range = list(range(1, 10))
-    # train_errors = []
-    # test_errors = []
-
-    # for num_trees in num_trees_range:
-    #     print(num_trees)
-    #     trees = bagged_trees(train_data, attributes, label, num_trees)
-    #     train_error = calculate_bagging_error(trees, train_data)
-    #     test_error = calculate_bagging_error(trees, test_data)
-    #     train_errors.append(train_error)
-    #     test_errors.append(test_error)
-
-    # # Plot the results
-    # plt.plot(num_trees_range, train_errors, label='Training Error')
-    # plt.plot(num_trees_range, test_errors, label='Test Error')
-    # plt.xlabel('Number of Trees')
-    # plt.ylabel('Error')
-    # plt.title('Bagging Performance')
-    # plt.legend()
-    # plt.show()
-    ########################################################################################################
-    ########################################################################################################
     
 if __name__ == '__main__':
     main()
