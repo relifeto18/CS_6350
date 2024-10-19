@@ -2,8 +2,10 @@
 
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from collections import Counter
 import matplotlib.pyplot as plt
+from joblib import Parallel, delayed
 
 # Get attribute descriptions from data-desc.txt
 label = 'label'
@@ -224,9 +226,63 @@ def adaboost_with_error_tracking(train_data, test_data, attributes, T):
 
     return classifiers, alpha_values, training_errors, testing_errors, stump_training_errors, stump_testing_errors
 
-##########################################################################################
-##########################################################################################
+# Parallel version of the adaboost_with_error_tracking function
+def adaboost_with_error_tracking_parallel(train_data, test_data, attributes, T, n_jobs=-1):
+    n = len(train_data)
+    weights = np.ones(n) / n  # Initialize weights equally
+    
+    classifiers = []
+    alpha_values = []
 
+    # Lists to store training and test errors over T iterations
+    training_errors = []
+    testing_errors = []
+    stump_training_errors = []
+    stump_testing_errors = []
+    
+    for t in tqdm(range(T), desc="AdaBoost Iterations"):
+        # Train a decision stump
+        stump = id3_algorithm(train_data, attributes, label, weights)
+
+        # Calculate the weighted error of the stump
+        error = calculate_weighted_error(stump, train_data, weights)
+        
+        if error == 0:  # Perfect classification
+            alpha = 1
+        else:
+            alpha = 0.5 * np.log((1 - error) / error)
+        
+        # Store classifier and its alpha value
+        classifiers.append(stump)
+        alpha_values.append(alpha)
+        
+        # Update weights
+        for i in range(n):
+            prediction = adaboost_predict_single_stump(stump, train_data.iloc[i])
+            if prediction == train_data.iloc[i][label]:
+                weights[i] *= np.exp(-alpha)
+            else:
+                weights[i] *= np.exp(alpha)
+                
+        # Normalize weights
+        weights /= sum(weights)
+        
+        # Track training and test errors after each iteration for the ensemble
+        training_error = calculate_adaboost_error(classifiers, alpha_values, train_data)
+        testing_error = calculate_adaboost_error(classifiers, alpha_values, test_data)
+        training_errors.append(training_error)
+        testing_errors.append(testing_error)
+
+        # Track training and test errors for the current stump (weak classifier)
+        stump_training_error = calculate_error(stump, train_data, weights)
+        stump_testing_error = calculate_error(stump, test_data, weights)
+        stump_training_errors.append(stump_training_error)
+        stump_testing_errors.append(stump_testing_error)
+
+    return classifiers, alpha_values, training_errors, testing_errors, stump_training_errors, stump_testing_errors
+##########################################################################################
+##########################################################################################
+    
 def main():
     attributes = ['age', 'job', 'marital', 'education', 'default', 'balance', 'housing', 'loan', 'contact', 'day', 
                 'month', 'duration', 'campaign', 'pdays', 'previous', 'poutcome']
@@ -246,8 +302,8 @@ def main():
     
     T = 500
     
-    # Run AdaBoost on the training data
-    classifiers, alphas, training_errors, testing_errors, stump_training_errors, stump_testing_errors = adaboost_with_error_tracking(
+    # Run AdaBoost on the training data with parallelism
+    classifiers, alphas, training_errors, testing_errors, stump_training_errors, stump_testing_errors = adaboost_with_error_tracking_parallel(
         train_data, test_data, attributes, T
     )
             
@@ -272,16 +328,6 @@ def main():
     plt.legend()
     plt.grid(True)
     plt.show()
-    
-    # Run AdaBoost on the training data
-    # classifiers, alphas = adaboost(train_data, attributes, T)
-
-    # # Calculate training and testing errors
-    # training_error = calculate_adaboost_error(classifiers, alphas, train_data)
-    # testing_error = calculate_adaboost_error(classifiers, alphas, test_data)
-    
-    # print(f"Training Error: {training_error:.4f}")
-    # print(f"Testing Error: {testing_error:.4f}\n")
 
 
 if __name__ == '__main__':
