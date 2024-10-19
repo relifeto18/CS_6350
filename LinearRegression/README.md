@@ -6,6 +6,7 @@ CS_6350/
 ├── LinearRegression/
 │   ├── data/
 │   │   └── concrete/
+│   │       └── concrete/
 │   ├── batchGD.py
 │   ├── SGD.py
 │   ├── Analytical.py

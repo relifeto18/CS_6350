@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the training data
-train_data = pd.read_csv('./data/concrete/train.csv')
+train_data = pd.read_csv('./data/concrete/concrete/train.csv')
 X_train = train_data.iloc[:, :-1].values  # Extract features (first 7 columns)
 y_train = train_data.iloc[:, -1].values  # Extract target (last column)
 
@@ -67,7 +67,7 @@ plt.title('Cost Function Over Updates (SGD)')
 plt.show()
 
 # Now load the test data and compute cost using the final weights
-test_data = pd.read_csv('./data/concrete/test.csv')
+test_data = pd.read_csv('./data/concrete/concrete/test.csv')
 X_test = test_data.iloc[:, :-1].values  # Extract features (first 7 columns)
 y_test = test_data.iloc[:, -1].values  # Extract target (last column)
 

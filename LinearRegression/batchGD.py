@@ -4,11 +4,11 @@ import numpy as np
 import pandas as pd
 
 # Load the training data
-train_data = pd.read_csv('./data/concrete/train.csv')
+train_data = pd.read_csv('./data/concrete/concrete/train.csv')
 X_train = train_data.iloc[:, :-1].values  # Extract features (first 7 columns)
 y_train = train_data.iloc[:, -1].values  # Extract target (last column)
 
-test_data = pd.read_csv('./data/concrete/test.csv')
+test_data = pd.read_csv('./data/concrete/concrete/test.csv')
 X_test = test_data.iloc[:, :-1].values  # Extract features (first 7 columns)
 y_test = test_data.iloc[:, -1].values
 
