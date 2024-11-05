@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo Running Standard Perceptron (shuffling data with random seed 20)
+echo Running Standard Perceptron, shuffling data with random seed 20
 python3 StandardPerceptron.py
 
 echo 

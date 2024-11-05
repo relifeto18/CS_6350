@@ -47,12 +47,12 @@ avg_bias /= (epochs * X_train.shape[0])
 predictions = np.sign(np.dot(X_test, avg_weights) + avg_bias)
 test_error = np.mean(predictions != y_test)
 
-# Display the results
-print("Learned averaged weight vector:", avg_weights)
-# print("Averaged bias:", avg_bias)
-print("Average prediction error on the test dataset:", test_error)
-
 # Print the list of weight vectors encountered
 print("\nList of weight vectors encountered during training:")
 for idx, vec in enumerate(weight_vectors):
     print(f"Update {idx+1}: {vec}")
+    
+# Display the results
+print("Learned averaged weight vector:", avg_weights)
+# print("Averaged bias:", avg_bias)
+print("Average prediction error on the test dataset:", test_error)
