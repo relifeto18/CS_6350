@@ -33,7 +33,7 @@ chmod +x run.sh
 
 You can set the random seed by using the following command line.
 
-`python StandardPerceptron.py --seed 20`
+`python3 StandardPerceptron.py --seed 20`
 
 **To run the shell file at the current directory: `./run.sh`**
 - You may need to modify the permission: `chmod +x run.sh`
