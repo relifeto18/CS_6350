@@ -46,5 +46,5 @@ test_error = np.mean(predictions != y_test)
 
 # Display the results
 print("Learned weight vector:", weights)
-# print("Bias:", bias)
+print("Bias:", bias)
 print("Average prediction error on the test dataset:", test_error)
