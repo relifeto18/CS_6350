@@ -10,3 +10,5 @@ LinearRegression/data
 LinearRegression/batch.png
 LinearRegression/SGD.png
 Perceptron/data
+SVM/data
+SVM/Support_vectors.py
