@@ -103,7 +103,6 @@ for C in C_values:
         print(f"  Training Error: {1 - train_accuracy:.4f}")
         print(f"  Test Error: {1 - test_accuracy:.4f}")
         print(f"  Number of Support Vectors = {num_support_vectors}")
-        print()
         
         # For C = 500/873, calculate overlap of support vectors
         if C == 500 / 873:
@@ -111,6 +110,8 @@ for C in C_values:
                 overlap = np.sum(support_indices & previous_support_indices)
                 print(f"  Overlap with Previous Gamma = {overlap}")
             previous_support_indices = support_indices
+
+        print()
 
 # Identify the best combination of C and gamma
 best_combination = min(results, key=lambda k: results[k]['test_error'])
