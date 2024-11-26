@@ -1,6 +1,9 @@
+import warnings
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Load the data
 train_data = pd.read_csv('./data/bank-note/bank-note/train.csv', header=None)

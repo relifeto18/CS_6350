@@ -1,6 +1,9 @@
+import warnings
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Load the data
 train_data = pd.read_csv('./data/bank-note/bank-note/train.csv', header=None)
