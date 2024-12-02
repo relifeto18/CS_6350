@@ -126,6 +126,8 @@ def main():
                     "Final Test Error": final_test_error,
                 })
 
+    print()
+    
     # Display results
     for result in results:
         print(result)
