@@ -13,3 +13,4 @@ Perceptron/data
 SVM/data
 SVM/Support_vectors.py
 NeuralNetworks/data
+LogisticRegression/data
